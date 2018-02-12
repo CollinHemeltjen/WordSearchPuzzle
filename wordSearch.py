@@ -25,23 +25,61 @@ def check(puzzle, rowIndex, charIndex, word):
     if puzzle[rowIndex][charIndex] != word[0]:
         # print(word, " doesn't start with ", puzzle[rowIndex][charIndex])
         return
+
     checkHorizontal(puzzle, rowIndex, charIndex, word)
 
 def checkHorizontal(puzzle, rowIndex, charIndex, word):
-    j = 0
-    for i in range(charIndex, charIndex+len(word)):
-        # print("is ",j," equal to ",len(word)-1,"?")
-        if j == len(word)-1:
-            # print("yes")
-            print(word," found at ", rowIndex, ",", charIndex, "-", rowIndex,",",charIndex+len(word))
-            return
+    # check in front
+    if checkHorizontalFront(puzzle, rowIndex, charIndex, word):
+        return True
+    #check the back
+    if checkHorizontalBack(puzzle, rowIndex, charIndex, word):
+        return True
+    # not found
+    return False
 
-        # print("no")
-        if puzzle[rowIndex][i] != word[j]:
+def checkHorizontalFront(puzzle, rowIndex, charIndex, word):
+    j = 0
+    found = True
+    row = puzzle[rowIndex]
+
+    # is there enough space for the word to exist?
+    if len(word) > (len(row) - charIndex):
+        return False
+
+    for i in range(charIndex, charIndex+len(word)):
+        # is the next character equal to the next word character?
+        if row[i] != word[j]:
+            found = False
             break
         j += 1
-    # for i in range(charIndex-len(word), charIndex)):
 
+    if found:
+        print(word," found at ", rowIndex, ",", charIndex, "-", rowIndex,",",charIndex+len(word))
+
+    return found
+
+def checkHorizontalBack(puzzle, rowIndex, charIndex, word):
+    # check behind
+    j = 0
+    found = True
+    row = puzzle[rowIndex]
+
+    # is there enough space for the word to exist?
+    if charIndex - len(word) < 0:
+        return False
+
+    for i in range(charIndex, charIndex-len(word),-1):
+        # is the next character equal to the next word character?
+        if row[i] != word[j]:
+            found = False
+            break
+        j += 1
+
+    if found:
+        print(word," found at ", rowIndex, ",", charIndex, "-", rowIndex,",",charIndex-len(word))
+
+    return found
 
 # Creates a (for the program readable) table
 def getPuzzle():
